@@ -15,17 +15,20 @@
 
 $titleErr = $annotationErr = $contentErr = $emailErr = $viewsErr = $dateErr = $publishInIndexErr = $categoryErr = "";
 $title = $annotation = $content = $email = $views = $date = $publishInIndex = $category = "";
-
+$valid = true;
 if (isset($_POST['submit'])) {
 
     if (empty($_POST['title'])) {
+        $valid = false;
         $titleErr = "Поле заголовок не повинно бути порожнім";
     } else {
         $title = $_POST["title"];
         if (strlen($title) < 3) {
+            $valid = false;
             $titleErr = "Поле заголовок повинно мати не менше трьох символів";
         }
         if (strlen($title) > 255) {
+            $valid = false;
             $titleErr = "Поле заголовок повинно мати не більше ніж 255 символів";
         }
     }
@@ -33,6 +36,7 @@ if (isset($_POST['submit'])) {
     if (isset($_POST["annotation"])) {
         $annotation = $_POST["annotation"];
         if (strlen($annotation) > 500) {
+            $valid = false;
             $annotationErr = "Поле анотація не повинне перевищувати 500 символів";
         }
     }
@@ -40,15 +44,18 @@ if (isset($_POST['submit'])) {
     if (isset($_POST["content"])) {
         $content = $_POST["content"];
         if (strlen($content) > 30000) {
+            $valid = false;
             $contentErr = "Поле контенту не повинно перевищувати 30 000 символів";
         }
     }
 
     if (empty($_POST["email"])) {
+        $valid = false;
         $emailErr = "Поле email не повинно бути порожнім";
     } else {
         $email = $_POST["email"];
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $valid = false;
             $emailErr = "Поле email має бути валідним email";
         }
     }
@@ -56,51 +63,54 @@ if (isset($_POST['submit'])) {
     if (isset($_POST["views"])) {
         $views = $_POST["views"];
         if (!filter_var($views, FILTER_VALIDATE_INT, ["options" => ["min_range" => 0 , "max_range"=> 2147483647]]) !== false) {
+            $valid = false;
             $viewsErr = "Кількість переглядів має бути числом, не повинно бути негативним і в межах розміру UNSIGNED INT";
         }
     }
    
     if (isset($_POST["date"])) {
         $date = $_POST["date"];
-        if (strtotime($date) > time()) {
+        if (strtotime($date) < time()) {
+            echo strtotime($date) . '<br>';
+            echo time() . '<br>';
+            $valid = false;
             $dateErr = "Дата публікації не повинна бути раніше поточної дати";
         }
     }
 
     if (empty($_POST["publish_in_index"])) {
+        $valid = false;
         $publishInIndexErr = "Поле публікувати на головній має бути обов'язковим";
     }
      else {
         $publishInIndex = $_POST["publish_in_index"];
-        if ($publishInIndex !== 'yes' || $publishInIndex !== 'no') {
+        if ($publishInIndex !== 'yes' && $publishInIndex !== 'no') {
+            $valid = false;
             $publishInIndexErr = "Поле публікувати на головній має містити значення 'yes' або 'no'";
         }
     }
-    
-    if (isset($_POST["category"])) {
-        $category = $_POST["category"];
-        if (!is_int($category)) {
-            $categoryErr = "Поле категрія має бути числом і бути одним із значень [1, 2, 3]";
-        }
+
+    if ($valid === true && isset($_POST['submit'])) {
+        $title = $_POST["title"] ?  $_POST["title"]: '';
+        $annotation = $_POST['annotation'] ?  $_POST["annotation"]: '';
+        $content = $_POST['content'] ? $_POST["content"] : '';
+        $email = $_POST['email'] ? $_POST["email"]: '';
+        $views = $_POST['views'] ? $_POST["views"]: '';
+        $date = $_POST['date'] ? $_POST["date"]: '';
+        $publishInIndex = $_POST['publish_in_index'] ? $_POST["publish_in_index"]: '';
+        $category = $_POST['category'] ? $_POST["category"]: '';
+
+        echo $title . '<br>';
+        echo $annotation . '<br>';
+        echo $content . '<br>';
+        echo $email . '<br>';
+        echo $views . '<br>';
+        echo $date . '<br>';
+        echo $publishInIndex . '<br>';
+        echo $category . '<br>';
     }
 
-    $title = $_POST["title"] ?  $_POST["title"]: '';
-    $annotation = $_POST['annotation'] ?  $_POST["annotation"]: '';
-    $content = $_POST['content'] ? $_POST["content"] : '';
-    $email = $_POST['email'] ? $_POST["email"]: '';
-    $views = $_POST['views'] ? $_POST["views"]: '';
-    $date = $_POST['date'] ? $_POST["date"]: '';
-    $publishInIndex = $_POST['publish_in_index'] ? $_POST["publish_in_index"]: '';
-    $category = $_POST['category'] ? $_POST["category"]: '';
-
-    echo $title . '<br>';
-    echo $annotation . '<br>';
-    echo $content . '<br>';
-    echo $email . '<br>';
-    echo $views . '<br>';
-    echo $date . '<br>';
-    echo $publishInIndex . '<br>';
-    echo $category . '<br>';
+    
 
 }
 
@@ -260,8 +270,7 @@ if (isset($_POST['submit'])) {
                 <label for="category" class="col-md-2 col-form-label">Публичная новость</label>
                 <div class="col-md-10">
                     <select id="category" class="form-control" name="category">
-                        <option disabled selected>Выберете категорию из списка..</option>
-                        <option value="1">Спорт</option>
+                        <option value="1" selected>Спорт</option>
                         <option value="2">Культура</option>
                         <option value="3">Политика</option>
                     </select>
@@ -276,9 +285,11 @@ if (isset($_POST['submit'])) {
                     <button type="submit" name="submit" class="btn btn-primary">Отправить</button>
                 </div>
                 <div class="col-md-3">
+                <?php if ($valid === true && isset($_POST['submit'])) { ?>
                     <div class="alert alert-success">
                         Форма валидна
                     </div>
+                 <?php } ?>
                 </div>
             </div>
         </form>
