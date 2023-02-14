@@ -110,7 +110,6 @@ function test_input($data)
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Palmo</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <style>
         .error {color: red;}
@@ -131,7 +130,7 @@ function test_input($data)
 
     <div class="row">
     <p><span class="error">* required field</span></p>
-        <form style="width: 100%" method="post" target="frame">
+        <form style="width: 100%" method="post">
             <div class="form-group row">
                 <label for="title" class="col-md-2 col-form-label">Заголовок</label>
                 <div class="col-md-10">
@@ -290,6 +289,5 @@ function test_input($data)
 
     </div>
 </div>
-<iframe name="frame"></iframe>
 </body>
 </html>
