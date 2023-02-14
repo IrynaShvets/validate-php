@@ -22,10 +22,10 @@ if (isset($_POST['submit'])) {
         $titleErr = "Поле заголовок не повинно бути порожнім";
     } else {
         $title = $_POST["title"];
-        if (strlen($annotation) < 3) {
+        if (strlen($title) < 3) {
             $titleErr = "Поле заголовок повинно мати не менше трьох символів";
         }
-        if (strlen($annotation) > 255) {
+        if (strlen($title) > 255) {
             $titleErr = "Поле заголовок повинно мати не більше ніж 255 символів";
         }
     }
@@ -47,30 +47,25 @@ if (isset($_POST['submit'])) {
     if (empty($_POST["email"])) {
         $emailErr = "Поле email не повинно бути порожнім";
     } else {
-        $email = test_input($_POST["email"]);
+        $email = $_POST["email"];
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailErr = "Поле emai має бути валідним email";
+            $emailErr = "Поле email має бути валідним email";
         }
     }
-
+    
     if (isset($_POST["views"])) {
-        $views = test_input($_POST["views"]);
-        if (!is_int($views)) {
-            $viewsErr = "Кількість переглядів має бути числом";
-        }
-        if ($views < 0) {
-            $viewsErr = "Кількість переглядів не повинно бути негативним";
+        $views = $_POST["views"];
+        if (!filter_var($views, FILTER_VALIDATE_INT, ["options" => ["min_range" => 0 , "max_range"=> 2147483647]]) !== false) {
+            $viewsErr = "Кількість переглядів має бути числом, не повинно бути негативним і в межах розміру UNSIGNED INT";
         }
     }
-    //  межах розміру UNSIGNED INT.
-
+   
     if (isset($_POST["date"])) {
         $date = $_POST["date"];
         if (strtotime($date) > time()) {
             $dateErr = "Дата публікації не повинна бути раніше поточної дати";
         }
     }
-    //це повинна бути валідна дата
 
     if (empty($_POST["publish_in_index"])) {
         $publishInIndexErr = "Поле публікувати на головній має бути обов'язковим";
@@ -81,7 +76,7 @@ if (isset($_POST['submit'])) {
             $publishInIndexErr = "Поле публікувати на головній має містити значення 'yes' або 'no'";
         }
     }
-
+    
     if (isset($_POST["category"])) {
         $category = $_POST["category"];
         if (!is_int($category)) {
@@ -89,15 +84,24 @@ if (isset($_POST['submit'])) {
         }
     }
 
-}
+    $title = $_POST["title"] ?  $_POST["title"]: '';
+    $annotation = $_POST['annotation'] ?  $_POST["annotation"]: '';
+    $content = $_POST['content'] ? $_POST["content"] : '';
+    $email = $_POST['email'] ? $_POST["email"]: '';
+    $views = $_POST['views'] ? $_POST["views"]: '';
+    $date = $_POST['date'] ? $_POST["date"]: '';
+    $publishInIndex = $_POST['publish_in_index'] ? $_POST["publish_in_index"]: '';
+    $category = $_POST['category'] ? $_POST["category"]: '';
 
-function test_input($data)
-{
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
+    echo $title . '<br>';
+    echo $annotation . '<br>';
+    echo $content . '<br>';
+    echo $email . '<br>';
+    echo $views . '<br>';
+    echo $date . '<br>';
+    echo $publishInIndex . '<br>';
+    echo $category . '<br>';
 
-    return $data;
 }
 
 ?>
@@ -119,14 +123,6 @@ function test_input($data)
 
 <br>
 <div class="container">
-    <ul class="menu">
-        <li>
-            <a href="index.php">Home</a>
-        </li>
-        <li>
-            <a href="form.php">Form</a>
-        </li>
-    </ul>
 
     <div class="row">
     <p><span class="error">* required field</span></p>
@@ -190,7 +186,7 @@ function test_input($data)
                     >
                     <div class="invalid-feedback">
                     </div>
-                    <span class="error">* <?php echo $emailErr;?></span>
+                    <span class="error">*<?php echo $emailErr;?></span>
                 </div>
             </div>
 
@@ -198,11 +194,11 @@ function test_input($data)
                 <label for="views" class="col-md-2 col-form-label">Кол-во просмотров</label>
                 <div class="col-md-10">
                     <input
-                            type="text"
+                            type="number"
                             class="form-control"
                             id="views"
                             name="views"
-                            value="views"
+                            value=""
                     >
                     <div class="invalid-feedback">
                     </div>
@@ -271,7 +267,7 @@ function test_input($data)
                     </select>
                     <div class="invalid-feedback">
                     </div>
-                    <span class="error"> <?php echo $categoryErr;?></span>
+                    <span class="error"><?php echo $categoryErr;?></span>
                 </div>
             </div>
 
@@ -281,12 +277,11 @@ function test_input($data)
                 </div>
                 <div class="col-md-3">
                     <div class="alert alert-success">
-                        <button type="button" name="validate" class="btn btn-primary">Форма валидна</button>
+                        Форма валидна
                     </div>
                 </div>
             </div>
         </form>
-
     </div>
 </div>
 </body>

@@ -29,7 +29,6 @@ if (isset($_SESSION['category'])) {
     $category = $_SESSION['category'];
 }
 
-
 if (isset($_POST['submit'])) {
     $title = $_POST['title'];
     $annotation = $_POST['annotation'];
@@ -50,42 +49,6 @@ if (isset($_POST['submit'])) {
     $_SESSION['isPublish'] = $_POST['is_publish'];
     $_SESSION['publishInIndex'] = $_POST['publish_in_index'];
     $_SESSION['category'] = $_POST['category'];
-
-    echo $title . '<br>';
-    echo $annotation . '<br>';
-    echo $content . '<br>';
-    echo $email . '<br>';
-    echo $views . '<br>';
-    echo $date . '<br>';
-    echo $isPublish . '<br>';
-    echo $publishInIndex . '<br>';
-    echo $category . '<br>';
-
 }
 
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-</head>
-
-<body>
-
-    <ul class="menu">
-        <li>
-            <a href="index.php">Home</a>
-        </li>
-        <li>
-            <a href="form.php">Form</a>
-        </li>
-    </ul>
-
-</body>
-
-</html>
